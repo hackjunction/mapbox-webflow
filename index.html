@@ -1,460 +1,248 @@
-<html>
-  <head>
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.js"></script>
-    <link
-      href="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css"
-      rel="stylesheet"
-    />
-    <script
-      src="https://kit.fontawesome.com/80b1976d6c.js"
-      crossorigin="anonymous"
-    ></script>
+<head>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.js"></script>
+  <link
+    href="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css"
+    rel="stylesheet"
+  />
+  <script
+    src="https://kit.fontawesome.com/80b1976d6c.js"
+    crossorigin="anonymous"
+  ></script>
 
-    <style>
-      .EventsMapControls {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        flex-direction: row;
-      }
-      .EventsMapControls--button {
-        width: 30px;
-        height: 30px;
-        font-size: 1.2em;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: rgba(35, 35, 35, 0.6);
-        margin-right: 1px;
-      }
-      .EventsMap {
-        align-self: stretch;
-        margin-left: 0px;
-        margin-right: 0px;
-        position: relative;
-      }
-      .EventsMap--title {
-        padding: 0px;
-        padding-bottom: 0;
-        text-align: center;
-        margin: 0;
-        font-size: 40px;
-      }
-      .EventsMap--desc {
-        padding: 0px;
-        padding-top: 0;
-        font-size: 18px;
-        text-align: center;
-      }
-      .EventsMap--Inner {
-        height: 700px;
-        position: relative;
-        width: 100%;
-      }
-      .EventsMap--Marker {
-        height: 80px;
-        width: 50px;
-        padding-bottom: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .EventsMap--Marker i {
-        width: 50px;
-        height: 40px;
-        color: red;
-        font-size: 36px;
-        line-height: 30px;
-        text-align: center;
-      }
-      .EventsMap--MarkerWrapper {
-        z-index: 50;
-      }
-      .EventsMap--Popup {
-        z-index: 100;
-        position: relative;
-        color: #232323;
-        border-radius: 7px;
-        background: white;
-        overflow: hidden;
-        box-shadow: 1px 1px 5px rgba(35, 35, 35, 0.15),
-          -1px -1px 5px rgba(35, 35, 35, 0.15);
-      }
-      .EventsMap--Popup__image {
-        width: 100%;
-        background: #232323;
-      }
-      .EventsMap--Popup__content {
-        padding: 20px;
-        padding-top: 10px;
-        position: relative;
-        z-index: 100;
-      }
-      .EventsMap--Popup__name {
-        margin: 0;
-        color: #232323;
-        font-size: 20px;
-      }
-      .EventsMap--Popup__dates {
-        color: #232323;
-        font-size: 16px;
-        line-height: 20px;
-        font-weight: bold;
-        margin: 0;
-      }
-      .EventsMap--Popup__desc {
-        color: #232323;
-        font-size: 16px;
-        line-height: 20px;
-        margin: 0;
-        margin-top: 10px;
-      }
-      .EventsMap--Popup__link {
-        font-weight: bold;
-        font-size: 16px;
-        margin-top: 10px;
-        display: block;
-      }
-      .EventsMap--Popup__prev,
+  <style>
+    .EventsMapControls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: row;
+    }
+    .EventsMapControls--button {
+      width: 30px;
+      height: 30px;
+      font-size: 1.2em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(35, 35, 35, 0.6);
+      margin-right: 1px;
+    }
+    .EventsMap {
+      align-self: stretch;
+      margin-left: 0px;
+      margin-right: 0px;
+      position: relative;
+    }
+    .EventsMap--title {
+      padding: 0px;
+      padding-bottom: 0;
+      text-align: center;
+      margin: 0;
+      font-size: 40px;
+    }
+    .EventsMap--desc {
+      padding: 0px;
+      padding-top: 0;
+      font-size: 18px;
+      text-align: center;
+    }
+    .EventsMap--Inner {
+      height: 700px;
+      position: relative;
+      width: 100%;
+    }
+    .EventsMap--Marker {
+      height: 80px;
+      width: 50px;
+      padding-bottom: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .EventsMap--Marker i {
+      width: 50px;
+      height: 40px;
+      color: red;
+      font-size: 36px;
+      line-height: 30px;
+      text-align: center;
+    }
+    .EventsMap--MarkerWrapper {
+      z-index: 50;
+    }
+    .EventsMap--Popup {
+      z-index: 100;
+      position: relative;
+      color: #232323;
+      border-radius: 7px;
+      background: white;
+      overflow: hidden;
+      box-shadow: 1px 1px 5px rgba(35, 35, 35, 0.15),
+        -1px -1px 5px rgba(35, 35, 35, 0.15);
+    }
+    .EventsMap--Popup__image {
+      width: 100%;
+      background: #232323;
+    }
+    .EventsMap--Popup__content {
+      padding: 20px;
+      padding-top: 10px;
+      position: relative;
+      z-index: 100;
+    }
+    .EventsMap--Popup__name {
+      margin: 0;
+      color: #232323;
+      font-size: 20px;
+    }
+    .EventsMap--Popup__dates {
+      color: #232323;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: bold;
+      margin: 0;
+    }
+    .EventsMap--Popup__desc {
+      color: #232323;
+      font-size: 16px;
+      line-height: 20px;
+      margin: 0;
+      margin-top: 10px;
+    }
+    .EventsMap--Popup__link {
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 10px;
+      display: block;
+    }
+    .EventsMap--Popup__prev,
+    .EventsMap--Popup__next {
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      opacity: 0;
+    }
+    .EventsMap--Popup__prev i,
+    .EventsMap--Popup__next i {
+      color: white;
+      font-size: 32px;
+      width: 60px;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 2px;
+      transition: background 0.2s ease;
+    }
+    .EventsMap--Popup__prev i:hover,
+    .EventsMap--Popup__next i:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+    .EventsMap--Popup__next {
+      right: 0;
+      left: auto;
+      margin-right: -75px;
+    }
+    @media (max-width: 899px) {
       .EventsMap--Popup__next {
-        z-index: 1;
-        position: absolute;
+        margin-right: 0 !important;
         top: 0;
-        bottom: 0;
-        width: 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        opacity: 0;
-      }
-      .EventsMap--Popup__prev i,
-      .EventsMap--Popup__next i {
-        color: white;
-        font-size: 32px;
-        width: 60px;
-        height: 60px;
-        background: rgba(0, 0, 0, 0.4);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 2px;
-        transition: background 0.2s ease;
-      }
-      .EventsMap--Popup__prev i:hover,
-      .EventsMap--Popup__next i:hover {
-        background: rgba(0, 0, 0, 0.8);
-      }
-      .EventsMap--Popup__next {
+        bottom: auto;
+        width: auto;
         right: 0;
-        left: auto;
-        margin-right: -75px;
+        opacity: 1;
+        z-index: 100;
       }
-      @media (max-width: 899px) {
-        .EventsMap--Popup__next {
-          margin-right: 0 !important;
-          top: 0;
-          bottom: auto;
-          width: auto;
-          right: 0;
-          opacity: 1;
-          z-index: 100;
-        }
-        .EventsMap--Popup__next i {
-          width: 45px;
-          height: 45px;
-          font-size: 1.5em;
-          border-radius: 0 7px 0 0;
-        }
-        .EventsMap--Popup__next:hover {
-          margin-right: 0;
-        }
+      .EventsMap--Popup__next i {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5em;
+        border-radius: 0 7px 0 0;
       }
+      .EventsMap--Popup__next:hover {
+        margin-right: 0;
+      }
+    }
+    .EventsMap--Popup__prev {
+      left: 0;
+      right: auto;
+      margin-left: -75px;
+    }
+    @media (max-width: 899px) {
       .EventsMap--Popup__prev {
+        margin-left: 0 !important;
+        top: 0;
+        bottom: auto;
+        width: auto;
         left: 0;
-        right: auto;
-        margin-left: -75px;
-      }
-      @media (max-width: 899px) {
-        .EventsMap--Popup__prev {
-          margin-left: 0 !important;
-          top: 0;
-          bottom: auto;
-          width: auto;
-          left: 0;
-          opacity: 1;
-          z-index: 100;
-        }
-        .EventsMap--Popup__prev i {
-          width: 45px;
-          height: 45px;
-          font-size: 1.5em;
-          border-radius: 7px 0 0 0;
-        }
-        .EventsMap--Popup__prev:hover {
-          margin-left: 0;
-        }
-      }
-      .EventsMap--PopupWrapper {
-        animation: fade-in-up;
-        animation-duration: 0.5s;
-        animation-timing-function: ease-in-out;
-        z-index: 51;
-      }
-      .EventsMap--PopupWrapper .mapboxgl-popup-content {
-        background: transparent;
-        padding: 0;
-      }
-
-      .mapboxgl-popup-content {
-        padding: 0 !important;
-        display: flex;
-        flex-direction: row;
-      }
-
-      .EventsMap--PopupWrapper .mapboxgl-popup-tip {
-        z-index: 1000;
-      }
-      .EventsMap--PopupWrapper:hover .EventsMap--Popup__prev {
-        margin-left: -100px;
         opacity: 1;
+        z-index: 100;
       }
-      .EventsMap--PopupWrapper:hover .EventsMap--Popup__next {
-        margin-right: -100px;
+      .EventsMap--Popup__prev i {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5em;
+        border-radius: 7px 0 0 0;
+      }
+      .EventsMap--Popup__prev:hover {
+        margin-left: 0;
+      }
+    }
+    .EventsMap--PopupWrapper {
+      animation: fade-in-up;
+      animation-duration: 0.5s;
+      animation-timing-function: ease-in-out;
+      z-index: 51;
+    }
+    .EventsMap--PopupWrapper .mapboxgl-popup-content {
+      background: transparent;
+      padding: 0;
+    }
+
+    .mapboxgl-popup-content {
+      padding: 0 !important;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .EventsMap--PopupWrapper .mapboxgl-popup-tip {
+      z-index: 1000;
+    }
+    .EventsMap--PopupWrapper:hover .EventsMap--Popup__prev {
+      margin-left: -100px;
+      opacity: 1;
+    }
+    .EventsMap--PopupWrapper:hover .EventsMap--Popup__next {
+      margin-right: -100px;
+      opacity: 1;
+    }
+    @keyframes fade-in-up {
+      0% {
+        opacity: 0;
+        margin-top: -10px;
+      }
+      60% {
+        opacity: 0;
+        margin-top: -10px;
+      }
+      100% {
         opacity: 1;
+        margin-top: 0;
       }
-      @keyframes fade-in-up {
-        0% {
-          opacity: 0;
-          margin-top: -10px;
-        }
-        60% {
-          opacity: 0;
-          margin-top: -10px;
-        }
-        100% {
-          opacity: 1;
-          margin-top: 0;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="EventsMap--Inner">
-      <div id="map" style="width: 100%; height: 100%"></div>
-    </div>
-
-    <script>
-      // This is a public read-only token and can therefore be stored in the codebase. Do not add any secret keys here!
-      mapboxgl.accessToken =
-        "pk.eyJ1IjoiaGFja2p1bmN0aW9uIiwiYSI6ImNqdnFqaGtsMjI1ZWM0Ym9mZGg1cTNrODgifQ.opDfJH_G3cznE63MLRQ9ww";
-      var map = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/mapbox/dark-v9",
-        center: ["24.9384", "20.1699"], // starting position [lng, lat]
-        zoom: "1.5", // starting zoom
-        transitionDuration: "300",
-        dragPan: "false",
-        dragRotate: "false",
-        scrollZoom: "false",
-        touchZoom: "false",
-        doubleClickZoom: "false",
-        touchAction: "pan-y",
-        attributionControl: "false",
-      });
-
-      const setActiveLocation = (e) => {
-        const origlocation = e.features[0].geometry.coordinates.slice();
-
-        // Let's change the center of the map so that the description popup fits better :)
-        const newlocation = [
-          e.features[0].geometry.coordinates[0],
-          e.features[0].geometry.coordinates[1] + 0.5,
-        ];
-
-        map.flyTo({
-          center: newlocation,
-          essential: true,
-          zoom: 7,
-        });
-      };
-
-      map.on("load", function () {
-        map.loadImage(
-          "https://upload.wikimedia.org/wikipedia/commons/7/7c/201408_cat.png",
-          function (error, image) {
-            map.addImage("cat", image);
-            if (error) throw error;
-          }
-        );
-        // Add the image to the map style.
-
-        map.addSource("places", {
-          // This GeoJSON contains features that include an "icon"
-          // property. The value of the "icon" property corresponds
-          // to an image in the Mapbox Streets style's sprite.
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: [
-              {
-                type: "Feature",
-                properties: {
-                  description:
-                    '<strong>Make it Mount Pleasant</strong><p><a href="http://www.mtpleasantdc.com/makeitmtpleasant" target="_blank" title="Opens in a new window">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>',
-                  name: "Upea tapahtuma",
-                  description: "https://hackjunction.com",
-                  eventTime: "25/12/2021",
-                  linkToTickets: "https://hackjunction.com",
-                  shortDescription: "Noniin elikkäs",
-                  locationDescription: "Kunnon mesta",
-                  linkToEventSite: "https://hackjunction.com",
-                  eventImage:
-                    "https://edit.co.uk/uploads/2016/12/Image-1-Alternatives-to-stock-photography-Thinkstock.jpg",
-                },
-                geometry: {
-                  type: "Point",
-                  coordinates: [24.933168, 60.174651],
-                },
-              },
-              {
-                type: "Feature",
-                properties: {
-                  description:
-                    '<strong>Mad Men Season Five Finale Watch Party</strong><p>Head to Lounge 201 (201 Massachusetts Avenue NE) Sunday for a <a href="http://madmens5finale.eventbrite.com/" target="_blank" title="Opens in a new window">Mad Men Season Five Finale Watch Party</a>, complete with 60s costume contest, Mad Men trivia, and retro food and drink. 8:00-11:00 p.m. $10 general admission, $20 admission and two hour open bar.</p>',
-                },
-                geometry: {
-                  type: "Point",
-                  coordinates: [24.038659, 38.931567],
-                },
-              },
-            ],
-          },
-        });
-
-        map.addLayer({
-          id: "places",
-          type: "symbol",
-          source: "places",
-          layout: {
-            "icon-image": "cat", // reference the image
-            "icon-size": 0.1,
-            "icon-allow-overlap": true,
-          },
-        });
-
-        // Disable scrolling of the map.  Helpful if we want users to be able to scroll over the map. Requires that the buttons start working tho.
-        //map.scrollZoom.disable();
-
-        map.on("click", "places", function (event) {
-          var coordinates = event.features[0].geometry.coordinates.slice();
-
-          const {
-            name,
-            eventImage,
-            description,
-            eventTime,
-            linkToTickets,
-            shortDescription,
-            locationDescription,
-            linkToEventSite,
-          } = event.features[0].properties;
-
-          var newdesc = `
-
-<div class="EventsMap--PopupWrapper EventsMap--PopupWrapper-active">
-  <div class="EventsMap--Popup">
-    <img
-      class="EventsMap--Popup__image"
-      src="${eventImage}"
-      width="100%"
-      height="180px"
-    />
-    <div class="EventsMap--Popup__content">
-      <h4 class="EventsMap--Popup__name">${name}</h4>
-      <p class="EventsMap--Popup__dates">
-        ${eventTime} | ${locationDescription}
-      </p>
-      <p class="EventsMap--Popup__desc">${shortDescription}</p>
-      ${
-        linkToTickets
-          ? `<a
-        class="EventsMap--Popup__link"
-        href="${linkToTickets}"
-      >
-        Tickets </a
-      >`
-          : null
-      } ${
-            linkToEventSite
-              ? `<a
-        class="EventsMap--Popup__link"
-        href="${linkToEventSite}"
-      >
-        Event website </a
-      >`
-              : null
-          }
-    </div>
+    }
+  </style>
+</head>
+<body>
+  <div class="EventsMap--Inner">
+    <div id="map" style="width: 100%; height: 100%"></div>
   </div>
-  <div class="EventsMap--Popup__prev">
-  <i class="fas fa-angle-left" onClick=${console.log("right")}></i>
-</div>
-  <div class="EventsMap--Popup__next">
-  <i class="fas fa-angle-right"onClick=${console.log("left")}></i>
-</div>
-</div>
-
-                      `;
-
-          // Ensure that if the map is zoomed out such that multiple
-          // copies of the feature are visible, the popup appears
-          // over the copy being pointed to.
-          while (Math.abs(event.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += event.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-
-          var popup = new mapboxgl.Popup({ class: "apple-popup" })
-            .setLngLat(coordinates)
-            .setHTML(newdesc)
-            .addTo(map);
-
-          popup.on("close", function () {
-            map.flyTo({
-              center: ["24.9384", "20.1699"], // starting position [lng, lat]
-              essential: true,
-              zoom: 1.5,
-            });
-          });
-        });
-
-        map.on("click", "places", function (e) {
-          const origlocation = e.features[0].geometry.coordinates.slice();
-
-          // Let's change the center of the map so that the description popup fits better :)
-          const newlocation = [
-            e.features[0].geometry.coordinates[0],
-            e.features[0].geometry.coordinates[1] + 0.5,
-          ];
-
-          map.flyTo({
-            center: newlocation,
-            essential: true,
-            zoom: 5,
-          });
-        });
-
-        map.on("mouseenter", "places", function () {
-          map.getCanvas().style.cursor = "pointer";
-        });
-
-        // Change it back to a pointer when it leaves.
-        map.on("mouseleave", "places", function () {
-          map.getCanvas().style.cursor = "";
-        });
-      });
-    </script>
-  </body>
-</html>
+  <script src="./script.js"></script>
+</body>
