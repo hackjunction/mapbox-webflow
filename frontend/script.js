@@ -42,7 +42,7 @@ map.on("load", function () {
     }
   );
 
-  // Get map data from Integromat
+  // Get map data from custom server
 
   function getLocations(url, done) {
     var xhr = new XMLHttpRequest();
@@ -56,47 +56,12 @@ map.on("load", function () {
     xhr.send();
   }
 
-  // And we'd call it as such:
-
-  getLocations(
-    "https://hook.integromat.com/5a4mp73aie8ixdgfdzt4erxdy9uuh42m",
-    function (err, datums) {
-      if (err) {
-        throw err;
-      }
-      console.log("integromat", datums);
+  getLocations("https://mapbox-webflow.herokuapp.com/", function (err, datums) {
+    if (err) {
+      throw err;
     }
-  );
-
-  function getWebflowdata(url, done) {
-    var xhr = new XMLHttpRequest();
-
-    xhr.open("GET", url, true);
-    xhr.setRequestHeader(
-      "Authorization",
-      "Bearer dca0b2f807ab19c0af7b5503d786e9874337dd6901485ff90d7e4a2ffd972ac8"
-    );
-    xhr.setRequestHeader("accepted-version", "1.0.0");
-    xhr.onload = function () {
-      done(null, xhr.response);
-    };
-    xhr.onerror = function () {
-      done(xhr.response);
-    };
-    xhr.send();
-  }
-
-  // And we'd call it as such:
-
-  getWebflowdata(
-    "https://api.webflow.com/collections/6051cb041c2ff4cd91f14729/items",
-    function (err, datums) {
-      if (err) {
-        throw err;
-      }
-      console.log("webflow", datums);
-    }
-  );
+    console.log("locations", datums);
+  });
 
   map.addSource("places", {
     // This GeoJSON contains features that include an "icon"
