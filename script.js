@@ -32,6 +32,7 @@ const setActiveLocation = (e) => {
   });
 };
 
+// Add the image to the map style.
 map.on("load", function () {
   map.loadImage(
     "https://upload.wikimedia.org/wikipedia/commons/7/7c/201408_cat.png",
@@ -40,7 +41,62 @@ map.on("load", function () {
       if (error) throw error;
     }
   );
-  // Add the image to the map style.
+
+  // Get map data from Integromat
+
+  function getLocations(url, done) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.onload = function () {
+      done(null, xhr.response);
+    };
+    xhr.onerror = function () {
+      done(xhr.response);
+    };
+    xhr.send();
+  }
+
+  // And we'd call it as such:
+
+  getLocations(
+    "https://hook.integromat.com/5a4mp73aie8ixdgfdzt4erxdy9uuh42m",
+    function (err, datums) {
+      if (err) {
+        throw err;
+      }
+      console.log("integromat", datums);
+    }
+  );
+
+  function getWebflowdata(url, done) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader(
+      "Authorization",
+      "Bearer dca0b2f807ab19c0af7b5503d786e9874337dd6901485ff90d7e4a2ffd972ac8"
+    );
+    xhr.setRequestHeader("accepted-version", "1.0.0");
+    xhr.onload = function () {
+      done(null, xhr.response);
+    };
+    xhr.onerror = function () {
+      done(xhr.response);
+    };
+    xhr.send();
+  }
+
+  // And we'd call it as such:
+
+  getWebflowdata(
+    "https://api.webflow.com/collections/6051cb041c2ff4cd91f14729/items",
+    function (err, datums) {
+      if (err) {
+        throw err;
+      }
+      console.log("webflow", datums);
+    }
+  );
 
   map.addSource("places", {
     // This GeoJSON contains features that include an "icon"
