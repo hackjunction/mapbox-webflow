@@ -56,7 +56,7 @@ map.on("load", function () {
 
   map.addSource("places", {
     type: "geojson",
-    // data: {},
+    data: {},
   });
 
   map.addLayer({
@@ -90,8 +90,8 @@ map.on("load", function () {
         },
         geometry: {
           type: "Point",
-          coordinates: [24.933168, 60.174651],
-          // coordinates: [elem.longitude, elem.latitude], // there seems to be problem how these are handled
+          //coordinates: [24.933168, 60.174651],
+          coordinates: [elem.longitude, elem.latitude], // there seems to be problem how these are handled
         },
       }));
       console.log("saved", saved);
