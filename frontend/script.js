@@ -35,9 +35,9 @@ const setActiveLocation = (e) => {
 // Add the image to the map style.
 map.on("load", function () {
   map.loadImage(
-    "https://upload.wikimedia.org/wikipedia/commons/7/7c/201408_cat.png",
+    "https://cdn-images-1.medium.com/max/1200/1*9PRyHVDyr4fNK7IPY80Y1w.jpeg",
     function (error, image) {
-      map.addImage("cat", image);
+      map.addImage("emblem", image);
       if (error) throw error;
     }
   );
@@ -64,8 +64,8 @@ map.on("load", function () {
     type: "symbol",
     source: "places",
     layout: {
-      "icon-image": "cat", // reference the image
-      "icon-size": 0.1,
+      "icon-image": "emblem", // reference the image
+      "icon-size": 0.03,
       "icon-allow-overlap": true,
     },
   });
