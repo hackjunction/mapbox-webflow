@@ -44,66 +44,19 @@ map.on("load", function () {
 
   // Get map data from custom server
 
-  function getLocations(url, done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.onload = function () {
-      done(null, xhr.response);
-    };
-    xhr.onerror = function () {
-      done(xhr.response);
-    };
-    xhr.send();
+  function getLocations(method, url) {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open(method, url);
+      xhr.onload = resolve;
+      xhr.onerror = reject;
+      xhr.send();
+    });
   }
 
-  getLocations("https://mapbox-webflow.herokuapp.com/", function (err, datums) {
-    if (err) {
-      throw err;
-    }
-    console.log("locations", datums);
-  });
-
   map.addSource("places", {
-    // This GeoJSON contains features that include an "icon"
-    // property. The value of the "icon" property corresponds
-    // to an image in the Mapbox Streets style's sprite.
     type: "geojson",
-    data: {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Make it Mount Pleasant</strong><p><a href="http://www.mtpleasantdc.com/makeitmtpleasant" target="_blank" title="Opens in a new window">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>',
-            name: "Upea tapahtuma",
-            description: "https://hackjunction.com",
-            eventTime: "25/12/2021",
-            linkToTickets: "https://hackjunction.com",
-            shortDescription: "Noniin elikkäs",
-            locationDescription: "Kunnon mesta",
-            linkToEventSite: "https://hackjunction.com",
-            eventImage:
-              "https://edit.co.uk/uploads/2016/12/Image-1-Alternatives-to-stock-photography-Thinkstock.jpg",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [24.933168, 60.174651],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Mad Men Season Five Finale Watch Party</strong><p>Head to Lounge 201 (201 Massachusetts Avenue NE) Sunday for a <a href="http://madmens5finale.eventbrite.com/" target="_blank" title="Opens in a new window">Mad Men Season Five Finale Watch Party</a>, complete with 60s costume contest, Mad Men trivia, and retro food and drink. 8:00-11:00 p.m. $10 general admission, $20 admission and two hour open bar.</p>',
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [24.038659, 38.931567],
-          },
-        },
-      ],
-    },
+    // data: {},
   });
 
   map.addLayer({
@@ -116,6 +69,42 @@ map.on("load", function () {
       "icon-allow-overlap": true,
     },
   });
+
+  getLocations("GET", "https://mapbox-webflow.herokuapp.com/").then(
+    function (e) {
+      let saved = [];
+      let response = JSON.parse(e.target.response);
+      items = response?.body?.items;
+      console.log(items);
+      saved = items.map((elem) => ({
+        type: "Feature",
+        properties: {
+          description: elem.description,
+          name: elem.name,
+          eventTime: elem["start-date-time"],
+          linkToTickets: elem["external-link"],
+          shortDescription: elem["short-description"],
+          locationDescription: elem.description,
+          linkToEventSite: elem.slug,
+          eventImage: elem.image.url,
+        },
+        geometry: {
+          type: "Point",
+          coordinates: [24.933168, 60.174651],
+          // coordinates: [elem.longitude, elem.latitude], // there seems to be problem how these are handled
+        },
+      }));
+      console.log("saved", saved);
+
+      map.getSource("places").setData({
+        type: "FeatureCollection",
+        features: saved,
+      });
+    },
+    function (e) {
+      // handle errors
+    }
+  );
 
   // Disable scrolling of the map.  Helpful if we want users to be able to scroll over the map. Requires that the buttons start working tho.
   //map.scrollZoom.disable();
